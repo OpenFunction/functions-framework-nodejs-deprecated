@@ -1,0 +1,30 @@
+{
+  "name": "functions-framework-nodejs",
+  "version": "0.1.0",
+  "description": "Nodejs functions framework for OpenFunction",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linxuyalun/functions-framework-nodejs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/linxuyalun/functions-framework-nodejs/issues"
+  },
+  "homepage": "https://github.com/linxuyalun/functions-framework-nodejs#readme",
+  "devDependencies": {
+    "standard": "^16.0.3"
+  },
+  "dependencies": {
+    "cloudevents": "^4.0.3",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "read-pkg-up": "^8.0.0",
+    "semver": "^7.3.5"
+  }
+}
