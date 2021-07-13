@@ -1,0 +1,4 @@
+node_modules
+
+# mac temp file
+.DS_Store
