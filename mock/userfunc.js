@@ -15,5 +15,6 @@ export const helloCloudEvents = (cloudevent) => {
   console.log(cloudevent.id)
   console.log(cloudevent.time)
   console.log(cloudevent.datacontenttype)
+  console.log(cloudevent.data)
   return cloudevent
 }

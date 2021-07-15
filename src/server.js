@@ -1,6 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import { FUNCTION_TYPE } from './const.js'
+import { cloudeventsHandler, httpHandler } from './handler.js'
 
 /**
  * Creates and configures an Express application and returns an HTTP server
@@ -11,7 +12,6 @@ import { FUNCTION_TYPE } from './const.js'
  */
 function getServer (userFunction, functionSignatureType) {
   const app = express()
-  app.use(express.json())
 
   // add logger
   app.use(morgan('combined'))
@@ -36,9 +36,9 @@ function getServer (userFunction, functionSignatureType) {
 function registerFunctionRoutes (app, userFunction, functionSignatureType) {
   if (functionSignatureType === FUNCTION_TYPE.HTTP ||
     functionSignatureType === FUNCTION_TYPE.KNATIVE) {
-    app.all('/*', userFunction)
+    httpHandler(app, userFunction)
   } else if (functionSignatureType === FUNCTION_TYPE.CLOUDEVENTS) {
-    // TODO: Add cloudevents handle logic
+    cloudeventsHandler(app, userFunction)
   }
 }
 
