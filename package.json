@@ -21,7 +21,6 @@
     "standard": "^16.0.3"
   },
   "dependencies": {
-    "cloudevents": "^4.0.3",
     "express": "^4.17.1",
     "morgan": "^1.10.0",
     "read-pkg-up": "^8.0.0",

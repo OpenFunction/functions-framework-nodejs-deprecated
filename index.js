@@ -4,9 +4,10 @@ import { getServer } from './src/server.js'
 
 const PORT = 3000
 const CODE_LOCATION = '../mock/userfunc'
-const FUNCTION_TARGET = 'helloNestedObj.helloWorld'
+// const FUNCTION_TARGET = 'helloNestedObj.helloWorld'
+const FUNCTION_TARGET = 'helloCloudEvents'
 
-const SIGNATURE_TYPE = FUNCTION_TYPE.HTTP
+const SIGNATURE_TYPE = FUNCTION_TYPE.CLOUDEVENTS
 
 let userFunction
 getUserFunction(CODE_LOCATION, FUNCTION_TARGET).then(fn => {

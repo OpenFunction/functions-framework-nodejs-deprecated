@@ -15,8 +15,7 @@ const MIN_NODE_VERSION_ESMODULES = '13.2.0'
  * Returns user's function from function file.
  * Returns null if function can't be retrieved.
  * @param {string} codeLocation - Directory with user's code.
- * @param {string} functionTarget - The function name.
- * TODO: A deeper explaination of two params
+ * @param {string} functionTarget - Function name, support nested function, e.g. 'a.b.c'
  * @return User's function or null.
  */
 async function getUserFunction (codeLocation, functionTarget) {
