@@ -1,7 +1,7 @@
 export const FUNCTION_SOURCE = {
   HTTP: 'http',
   KNATIVE: 'knative',
-  CLOUDEVENTS: 'cloudevent',
+  CLOUDEVENT: 'cloudevent',
   ASYNC_FUNCTION: 'asyncfunction'
 }
 

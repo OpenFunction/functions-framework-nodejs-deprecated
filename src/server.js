@@ -37,7 +37,7 @@ function registerFunctionRoutes (app, userFunction, functionSignatureType) {
   if (functionSignatureType === FUNCTION_SOURCE.HTTP ||
     functionSignatureType === FUNCTION_SOURCE.KNATIVE) {
     httpHandler(app, userFunction)
-  } else if (functionSignatureType === FUNCTION_SOURCE.CLOUDEVENTS) {
+  } else if (functionSignatureType === FUNCTION_SOURCE.CLOUDEVENT) {
     cloudeventsHandler(app, userFunction)
   }
 }

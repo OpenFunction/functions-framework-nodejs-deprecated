@@ -5,13 +5,13 @@ import { getUserFunction } from './src/loader.js'
 import { FUNCTION_SOURCE } from './src/const.js'
 import { getServer } from './src/server.js'
 
-const { HTTP, KNATIVE, CLOUDEVENTS, ASYNC_FUNCTION } = FUNCTION_SOURCE
+const { HTTP, KNATIVE, CLOUDEVENT, ASYNC_FUNCTION } = FUNCTION_SOURCE
 
 program
   .requiredOption('-t, --target <target>', 'function target name, support nested function name')
-  .addOption(new Option('-p, --port <port>', 'the exposed port of the function server').default('3000'))
+  .addOption(new Option('-p, --port <port>', 'the exposed port of the function server').default('8080'))
   .addOption(new Option('-s, --source <type>', 'function source type')
-    .default(HTTP).choices([HTTP, KNATIVE, CLOUDEVENTS, ASYNC_FUNCTION]))
+    .default(HTTP).choices([HTTP, KNATIVE, CLOUDEVENT, ASYNC_FUNCTION]))
 
 program.parse(process.argv)
 
@@ -39,6 +39,6 @@ getUserFunction(CODE_LOCATION, FUNCTION_TARGET).then(fn => {
   const app = getServer(userFunction, SIGNATURE_TYPE)
 
   app.listen(SERVER_PORT, () => {
-    console.log(`Example app listening at http://localhost:${SERVER_PORT}`)
+    console.log(`Openfunction functions framework listening at http://localhost:${SERVER_PORT}`)
   })
 })

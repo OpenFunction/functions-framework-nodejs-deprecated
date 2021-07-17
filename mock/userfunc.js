@@ -7,14 +7,8 @@ export const helloNestedObj = {
   }
 }
 
+export const helloJSON = (req, res) => { res.send({ hello: 'world' }) }
+
 export const helloCloudEvents = (cloudevent) => {
-  console.log(cloudevent.specversion)
-  console.log(cloudevent.type)
-  console.log(cloudevent.source)
-  console.log(cloudevent.subject)
-  console.log(cloudevent.id)
-  console.log(cloudevent.time)
-  console.log(cloudevent.datacontenttype)
-  console.log(cloudevent.data)
   return cloudevent
 }
