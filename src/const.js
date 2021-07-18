@@ -1,6 +1,9 @@
-export const FUNCTION_TYPE = {
+export const FUNCTION_SOURCE = {
   HTTP: 'http',
-  KNATIVE: 'knative',
-  CLOUDEVENTS: 'cloudevent',
-  ASYNC_FUNCTION: 'asyncfunction'
+  CLOUDEVENT: 'cloudevent',
+  OPENFUNCTION_CONTEXT: 'openfunction'
+}
+
+export const HTTP_CODE = {
+  ERROR_UNSUPPORTED: '415'
 }

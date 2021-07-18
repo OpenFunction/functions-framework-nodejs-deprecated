@@ -48,12 +48,9 @@ async function getUserFunction (codeLocation, functionTarget) {
         if (typeof code === 'undefined') {
           return undefined
         } else {
-          console.log(code)
-          console.log(code[functionTargetPart])
           return code[functionTargetPart]
         }
       }, functionModule)
-    console.log(userFunction)
 
     if (typeof userFunction === 'undefined') {
       console.error(
@@ -120,7 +117,6 @@ function getFunctionModulePath (codeLocation) {
  */
 async function isEsModule (modulePath) {
   const ext = path.extname(modulePath)
-  console.log(ext)
   if (ext === '.mjs') {
     return true
   }

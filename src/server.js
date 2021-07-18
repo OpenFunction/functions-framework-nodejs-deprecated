@@ -1,6 +1,6 @@
 import express from 'express'
 import morgan from 'morgan'
-import { FUNCTION_TYPE } from './const.js'
+import { FUNCTION_SOURCE } from './const.js'
 import { cloudeventsHandler, httpHandler } from './handler.js'
 
 /**
@@ -34,10 +34,9 @@ function getServer (userFunction, functionSignatureType) {
  * @param { string } functionSignatureType - Type of user's function signature.
  */
 function registerFunctionRoutes (app, userFunction, functionSignatureType) {
-  if (functionSignatureType === FUNCTION_TYPE.HTTP ||
-    functionSignatureType === FUNCTION_TYPE.KNATIVE) {
+  if (functionSignatureType === FUNCTION_SOURCE.HTTP) {
     httpHandler(app, userFunction)
-  } else if (functionSignatureType === FUNCTION_TYPE.CLOUDEVENTS) {
+  } else if (functionSignatureType === FUNCTION_SOURCE.CLOUDEVENT) {
     cloudeventsHandler(app, userFunction)
   }
 }

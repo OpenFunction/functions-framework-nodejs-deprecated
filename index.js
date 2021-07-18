@@ -1,13 +1,26 @@
+#!/usr/bin/env node
+
+import { program, Option } from 'commander'
 import { getUserFunction } from './src/loader.js'
-import { FUNCTION_TYPE } from './src/const.js'
+import { FUNCTION_SOURCE } from './src/const.js'
 import { getServer } from './src/server.js'
 
-const PORT = 3000
-const CODE_LOCATION = '../mock/userfunc'
-// const FUNCTION_TARGET = 'helloNestedObj.helloWorld'
-const FUNCTION_TARGET = 'helloCloudEvents'
+const { HTTP, CLOUDEVENT, OPENFUNCTION_CONTEXT } = FUNCTION_SOURCE
 
-const SIGNATURE_TYPE = FUNCTION_TYPE.CLOUDEVENTS
+program
+  .requiredOption('-t, --target <target>', 'function target name, support nested function name')
+  .addOption(new Option('-p, --port <port>', 'the exposed port of the function server').default('8080'))
+  .addOption(new Option('-s, --source <type>', 'function source type')
+    .default(HTTP).choices([HTTP, CLOUDEVENT, OPENFUNCTION_CONTEXT]))
+
+program.parse(process.argv)
+
+const options = program.opts()
+
+const SERVER_PORT = options.port
+const FUNCTION_TARGET = options.target
+const SIGNATURE_TYPE = options.source
+const CODE_LOCATION = process.cwd() + '/index.js'
 
 let userFunction
 getUserFunction(CODE_LOCATION, FUNCTION_TARGET).then(fn => {
@@ -25,7 +38,7 @@ getUserFunction(CODE_LOCATION, FUNCTION_TARGET).then(fn => {
 
   const app = getServer(userFunction, SIGNATURE_TYPE)
 
-  app.listen(PORT, () => {
-    console.log(`Example app listening at http://localhost:${PORT}`)
+  app.listen(SERVER_PORT, () => {
+    console.log(`Openfunction functions framework listening at http://localhost:${SERVER_PORT}`)
   })
 })

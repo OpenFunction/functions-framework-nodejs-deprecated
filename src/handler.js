@@ -1,4 +1,5 @@
 import express from 'express'
+import { HTTP_CODE } from './const.js'
 
 /**
  * Handle the business logic of HTTP requests.
@@ -12,7 +13,8 @@ function httpHandler (app, userFunction) {
       userFunction(req, res)
     } catch (err) {
       console.error(err)
-      res.status(415).header('Content-Type', 'application/json').send(JSON.stringify(err))
+      res.status(HTTP_CODE.ERROR_UNSUPPORTED)
+        .header('Content-Type', 'application/json').send(JSON.stringify(err))
     }
   })
 }
@@ -45,7 +47,8 @@ function cloudeventsHandler (app, userFunction) {
       res.send(result)
     } catch (err) {
       console.error(err)
-      res.status(415).header('Content-Type', 'application/json').send(JSON.stringify(err))
+      res.status(HTTP_CODE.ERROR_UNSUPPORTED)
+        .header('Content-Type', 'application/json').send(JSON.stringify(err))
     }
   })
 }
