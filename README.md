@@ -96,9 +96,8 @@ exports.helloWorld = (req, res) => {
 Function framework support the following type of function source:
 
 * HTTP
-* Knative
-* Cloudevent
-* Asyncfunction (OpenFunction native type): TODO
+* CloudEvent
+* OpenFunction Context (OpenFunction native type): TODO
 
 Here are some [examples](doc/function-examples.md) to give you a quick view of functions definition in different function source type.
 
@@ -110,7 +109,7 @@ You can configure the Functions Framework using command-line flags.
 | -------------- | -------- | ------------------------------------------------------------ | ---- |
 | `-p, --port`   | False    | The port on which the Functions Framework listens for requests. Default: `8080` |      |
 | `-t, --target` | True     | The name of the exported function to be invoked in response to requests. |      |
-| `-s, --source` | False    | Function source type. Default: `http`; accepted values: `http` or `knative` or `cloudevent` or `asyncfunction` |      |
+| `-s, --source` | False    | Function source type. Default: `http`; accepted values: `http` or  or `cloudevent` or `openfunction` |      |
 
 You can set command-line flags in your `package.json` via the `start` script. For example:
 

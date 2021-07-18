@@ -34,8 +34,7 @@ function getServer (userFunction, functionSignatureType) {
  * @param { string } functionSignatureType - Type of user's function signature.
  */
 function registerFunctionRoutes (app, userFunction, functionSignatureType) {
-  if (functionSignatureType === FUNCTION_SOURCE.HTTP ||
-    functionSignatureType === FUNCTION_SOURCE.KNATIVE) {
+  if (functionSignatureType === FUNCTION_SOURCE.HTTP) {
     httpHandler(app, userFunction)
   } else if (functionSignatureType === FUNCTION_SOURCE.CLOUDEVENT) {
     cloudeventsHandler(app, userFunction)

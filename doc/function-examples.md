@@ -2,7 +2,7 @@
 
 > ⚠️ Note that your entry function file must be `index.js`
 
-## HTTP / Kantive
+## HTTP
 
 The function framework is built on [Express](https://github.com/expressjs/express), so the function is `express style`.
 
@@ -145,6 +145,6 @@ $ curl -X POST \
 }
 ```
 
-## Async Function
+## OpenFunction Context
 
 > TODO

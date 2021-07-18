@@ -1,8 +1,7 @@
 export const FUNCTION_SOURCE = {
   HTTP: 'http',
-  KNATIVE: 'knative',
   CLOUDEVENT: 'cloudevent',
-  ASYNC_FUNCTION: 'asyncfunction'
+  OPENFUNCTION_CONTEXT: 'openfunction'
 }
 
 export const HTTP_CODE = {
