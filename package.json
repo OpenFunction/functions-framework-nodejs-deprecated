@@ -24,6 +24,7 @@
     "standard": "^16.0.3"
   },
   "dependencies": {
+    "@roadwork/dapr-js-sdk": "^0.3.1",
     "commander": "^8.0.0",
     "express": "^4.17.1",
     "morgan": "^1.10.0",

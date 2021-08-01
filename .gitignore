@@ -2,3 +2,6 @@ node_modules
 
 # mac temp file
 .DS_Store
+
+openfunction.json
+config.json

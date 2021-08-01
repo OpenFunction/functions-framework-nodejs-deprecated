@@ -1,5 +1,6 @@
 import express from 'express'
-import { HTTP_CODE } from './const.js'
+import { HTTP_CODE, FUNCTION_MODE } from './const.js'
+import { openfnGeneralHandler, openfnSubscribeHandler, openfnBindingHandler } from './openfunction/handler.js'
 
 /**
  * Handle the business logic of HTTP requests.
@@ -98,4 +99,22 @@ function constructCloudEventObj (req, isBinaryMode) {
   return ce
 }
 
-export { httpHandler, cloudeventsHandler }
+/**
+ * Handle the business logic of HTTP requests.
+ * @param { import('express').Application } app - Express application object.
+ * @param { function } userFunction - User's function.
+ * @param { string } functionMode - Type of user's function mode.
+ */
+function openfunctionHandler (app, userFunction, functionMode) {
+  if (functionMode === '') {
+    openfnGeneralHandler(app, userFunction)
+  }
+  if (functionMode === FUNCTION_MODE.SUBSCRIBE) {
+    openfnSubscribeHandler(app, userFunction)
+  }
+  if (functionMode === FUNCTION_MODE.BINDING) {
+    openfnBindingHandler(app, userFunction)
+  }
+}
+
+export { httpHandler, cloudeventsHandler, openfunctionHandler }
