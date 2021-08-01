@@ -9,9 +9,9 @@ import { openfnGeneralHandler, openfnSubscribeHandler, openfnBindingHandler } fr
  */
 function httpHandler (app, userFunction) {
   app.use(express.json())
-  app.all('/*', (req, res) => {
+  app.all('/*', async (req, res) => {
     try {
-      userFunction(req, res)
+      await userFunction(req, res)
     } catch (err) {
       console.error(err)
       res.status(HTTP_CODE.ERROR_UNSUPPORTED)
@@ -37,11 +37,11 @@ function cloudeventsHandler (app, userFunction) {
   })
   app.use(express.json({ type: ['application/cloudevents+json', 'application/json'] }))
 
-  app.post('/*', (req, res) => {
+  app.post('/*', async (req, res) => {
     try {
       const ceObj = constructCloudEventObj(req, isBinaryCloudEvent(req))
 
-      let result = userFunction(ceObj)
+      let result = await userFunction(ceObj)
       if (result === null || result === undefined) {
         result = {}
       }

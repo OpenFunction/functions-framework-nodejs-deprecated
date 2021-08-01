@@ -1,9 +1,8 @@
 import { DaprClient } from '@roadwork/dapr-js-sdk/http/index.js'
 import { openfnConfig } from './config.js'
 
-// TODO: convert the config to a config object
 const daprHost = '127.0.0.1'
-const daprPort = '3500' // Dapr Sidecar Port of this Example Server
+const daprPort = process.env.DAPR_HTTP_PORT || 3500 // Dapr Sidecar Port of this Example Server
 
 const { stateName, pubsubName, bindingName } = openfnConfig
 

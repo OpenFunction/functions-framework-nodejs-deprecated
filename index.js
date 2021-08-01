@@ -13,7 +13,7 @@ program
   .addOption(new Option('-p, --port <port>', 'the exposed port of the function server').default('8080'))
   .addOption(new Option('-s, --source <type>', 'function source type')
     .default(HTTP).choices([HTTP, CLOUDEVENT, OPENFUNCTION]))
-  .addOption(new Option('-,, --mode <mode>', 'the mode of the function server')
+  .addOption(new Option('-m, --mode <mode>', 'the mode of the function server')
     .choices([SUBSCRIBE, BINDING]))
 program.parse(process.argv)
 

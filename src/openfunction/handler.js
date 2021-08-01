@@ -10,9 +10,9 @@ import { openfnConfig } from './config.js'
  */
 function openfnGeneralHandler (app, userFunction) {
   app.use(express.json())
-  app.all('/*', (req, res) => {
+  app.all('/*', async (req, res) => {
     try {
-      userFunction(req, res, openfnContext)
+      await userFunction(req, res, openfnContext)
     } catch (err) {
       console.error(err)
       res.status(HTTP_CODE.ERROR_UNSUPPORTED)
@@ -44,9 +44,9 @@ function openfnSubscribeHandler (app, userFunction) {
     ])
   })
 
-  app.post('/', (req, res) => {
+  app.post('/', async (req, res) => {
     try {
-      userFunction(req, res, openfnContext)
+      await userFunction(req, res, openfnContext)
     } catch (err) {
       console.error(err)
       res.status(HTTP_CODE.ERROR_UNSUPPORTED)
@@ -75,9 +75,9 @@ function openfnBindingHandler (app, userFunction) {
     next()
   })
 
-  app.post('/', (req, res) => {
+  app.post('/', async (req, res) => {
     try {
-      userFunction(req, res, openfnContext)
+      await userFunction(req, res, openfnContext)
     } catch (err) {
       console.error(err)
       res.status(HTTP_CODE.ERROR_UNSUPPORTED)
