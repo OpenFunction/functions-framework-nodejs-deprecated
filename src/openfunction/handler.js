@@ -1,22 +1,46 @@
 import express from 'express'
-import { HTTP_CODE } from '../const.js'
-import { openfnContext } from './context.js'
-import { openfnConfig } from './config.js'
+import { HTTP_CODE, MIDDLEWARE_TYPE } from '../const.js'
+import { openfuncContext } from './context.js'
+import { openfuncConfig } from './config.js'
 
 /**
- * Handle the business logic of general openfunction requests.
+ * Handle the business logic of openfunction requests.
  * @param { import('express').Application } app - Express application object.
  * @param { function } userFunction - User's function.
  */
-function openfnGeneralHandler (app, userFunction) {
+function openfuncHandler (app, userFunction) {
+  if (openfuncConfig.input.isEmpty) {
+    openfuncGeneralHandler(app, userFunction)
+  }
+  if (openfuncConfig.input.params.type === MIDDLEWARE_TYPE.PUBSUB) {
+    openfuncSubscribeHandler(app, userFunction)
+  }
+  if (openfuncConfig.input.params.types === MIDDLEWARE_TYPE.BINDINGS) {
+    openfuncBindingHandler(app, userFunction)
+  }
+}
+
+/**
+ * Handle the business logic of general openfunction requests.
+ * Note that openfunction request body should be a json object.
+ * @param { import('express').Application } app - Express application object.
+ * @param { function } userFunction - User's function.
+ */
+function openfuncGeneralHandler (app, userFunction) {
   app.use(express.json())
-  app.all('/*', async (req, res) => {
+  app.all('/', async (req, res) => {
     try {
-      await userFunction(req, res, openfnContext)
+      const data = req.body
+      const result = await userFunction(data)
+      if (openfuncConfig.outputs.isEmpty) {
+        res.status(HTTP_CODE.SUCCESS).json({ data: result })
+      } else {
+        await sendResultToOutputs(result, openfuncConfig.outputs.data)
+        res.status(HTTP_CODE.SUCCESS).send()
+      }
     } catch (err) {
       console.error(err)
-      res.status(HTTP_CODE.ERROR_UNSUPPORTED)
-        .header('Content-Type', 'application/json').send(JSON.stringify(err))
+      res.status(HTTP_CODE.ERROR_UNSUPPORTED).json({ error: err })
     }
   })
 }
@@ -26,8 +50,8 @@ function openfnGeneralHandler (app, userFunction) {
  * @param { import('express').Application } app - Express application object.
  * @param { function } userFunction - User's function.
  */
-function openfnSubscribeHandler (app, userFunction) {
-  if (openfnConfig.pubsubName === '' || openfnConfig.pubsubTopic === '') {
+function openfuncSubscribeHandler (app, userFunction) {
+  if (openfuncConfig.pubsubName === '' || openfuncConfig.pubsubTopic === '') {
     console.error('pubsub name and pubsub topic should be specified if the mode option is \'subscribe\'')
     process.exit(1)
   }
@@ -37,8 +61,8 @@ function openfnSubscribeHandler (app, userFunction) {
   app.get('/dapr/subscribe', (_req, res) => {
     res.json([
       {
-        pubsubname: openfnConfig.pubsubName,
-        topic: openfnConfig.pubsubTopic,
+        pubsubname: openfuncConfig.pubsubName,
+        topic: openfuncConfig.pubsubTopic,
         route: '/'
       }
     ])
@@ -46,11 +70,10 @@ function openfnSubscribeHandler (app, userFunction) {
 
   app.post('/', async (req, res) => {
     try {
-      await userFunction(req, res, openfnContext)
+      await userFunction(req, res, openfuncContext)
     } catch (err) {
       console.error(err)
-      res.status(HTTP_CODE.ERROR_UNSUPPORTED)
-        .header('Content-Type', 'application/json').send(JSON.stringify(err))
+      res.status(HTTP_CODE.ERROR_UNSUPPORTED).json({ error: err })
     }
   })
 }
@@ -60,8 +83,8 @@ function openfnSubscribeHandler (app, userFunction) {
  * @param { import('express').Application } app - Express application object.
  * @param { function } userFunction - User's function.
  */
-function openfnBindingHandler (app, userFunction) {
-  if (openfnConfig.bindingName) {
+function openfuncBindingHandler (app, userFunction) {
+  if (openfuncConfig.bindingName) {
     console.error('binding name should be specified if the mode option is \'binding-receive\'')
     process.exit(1)
   }
@@ -69,7 +92,7 @@ function openfnBindingHandler (app, userFunction) {
   app.use(express.json())
   // redirect the dapr binding receive url to the '/' silently
   app.use((req, _res, next) => {
-    if (req.url === '/' + openfnConfig.bindingName) {
+    if (req.url === '/' + openfuncConfig.bindingName) {
       req.url = '/'
     }
     next()
@@ -77,13 +100,33 @@ function openfnBindingHandler (app, userFunction) {
 
   app.post('/', async (req, res) => {
     try {
-      await userFunction(req, res, openfnContext)
+      await userFunction(req, res, openfuncContext)
     } catch (err) {
       console.error(err)
-      res.status(HTTP_CODE.ERROR_UNSUPPORTED)
-        .header('Content-Type', 'application/json').send(JSON.stringify(err))
+      res.status(HTTP_CODE.ERROR_UNSUPPORTED).json({ error: err })
     }
   })
 }
 
-export { openfnGeneralHandler, openfnSubscribeHandler, openfnBindingHandler }
+/**
+ * Send function result to the output components.
+ * @param { object } result - User function result.
+ * @param { array } outputs - An array of outputs to send result to.
+ */
+async function sendResultToOutputs (result, outputs) {
+  const data = { data: result }
+  try {
+    await Promise.all(outputs.map(async output => {
+      if (output.params.type === MIDDLEWARE_TYPE.PUBSUB) {
+        await openfuncContext.pubsub.publish(data)
+      }
+      if (output.params.type === MIDDLEWARE_TYPE.BINDINGS) {
+        await openfuncContext.bindings.send(output.params.operation, data)
+      }
+    }))
+  } catch (err) {
+    throw new Error(err)
+  }
+}
+
+export { openfuncHandler }

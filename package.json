@@ -27,6 +27,7 @@
     "@roadwork/dapr-js-sdk": "^0.3.1",
     "commander": "^8.0.0",
     "express": "^4.17.1",
+    "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "read-pkg-up": "^8.0.0",
     "semver": "^7.3.5"

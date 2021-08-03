@@ -1,10 +1,10 @@
 import { DaprClient } from '@roadwork/dapr-js-sdk/http/index.js'
-import { openfnConfig } from './config.js'
+import { openfuncConfig } from './config.js'
 
 const daprHost = '127.0.0.1'
 const daprPort = process.env.DAPR_HTTP_PORT || 3500 // Dapr Sidecar Port of this Example Server
 
-const { stateName, pubsubName, bindingName } = openfnConfig
+const { stateName, pubsubName, bindingName } = openfuncConfig
 
 const daprClient = new DaprClient(daprHost, daprPort)
 
@@ -77,7 +77,7 @@ async function send (operation, data) {
   await daprClient.binding.send(bindingName, operation, data)
 }
 
-export const openfnContext = {
+export const openfuncContext = {
   state: {
     save: saveState,
     get: getState,
@@ -86,7 +86,7 @@ export const openfnContext = {
   pubsub: {
     publish
   },
-  binding: {
+  bindings: {
     send
   }
 }
