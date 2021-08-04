@@ -1,4 +1,3 @@
-import { env } from 'process'
 import { isEmpty } from 'lodash'
 import { MIDDLEWARE_TYPE } from '../const.js'
 // require cannot be used when "type" = "module" in package.json
@@ -6,11 +5,6 @@ import { createRequire } from 'module'
 const require = createRequire(import.meta.url)
 
 const config = require(process.cwd() + '/config.json')
-
-const stateName = env.STATE_NAME || config.stateName || ''
-const pubsubName = env.PUBSUB_NAME || config.pubsubName || ''
-const pubsubTopic = env.PUBSUB_TOPIC || config.pubsubTopic || ''
-const bindingName = env.BINDING_NAME || config.bindingName || ''
 
 // check user input here to simplify the business logic
 let input = config.input || {}
@@ -75,10 +69,6 @@ outputs = {
 }
 
 const openfuncConfig = {
-  stateName,
-  pubsubName,
-  pubsubTopic,
-  bindingName,
   input,
   outputs
 }

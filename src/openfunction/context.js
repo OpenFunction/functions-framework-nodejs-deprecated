@@ -1,10 +1,10 @@
 import { DaprClient } from '@roadwork/dapr-js-sdk/http/index.js'
-import { openfuncConfig } from './config.js'
 
 const daprHost = '127.0.0.1'
 const daprPort = process.env.DAPR_HTTP_PORT || 3500 // Dapr Sidecar Port of this Example Server
 
-const { stateName, pubsubName, bindingName } = openfuncConfig
+// TODO: handle statestore later
+const stateName = 'statestore'
 
 const daprClient = new DaprClient(daprHost, daprPort)
 
@@ -52,27 +52,21 @@ async function deleteState (key) {
 
 /**
  * Publish data to the pubsub middleware.
+ * @param { string } pubsubName - The name of publish component.
  * @param { string } topic - The name of publish topic.
  * @param { Object } data - The data to be published.
  */
-async function publish (topic, data) {
-  if (pubsubName === '') {
-    console.error('pubsubName name should be specified in env or config.json if you want to use \'publish\'')
-    return
-  }
+async function publish (pubsubName, topic, data) {
   await daprClient.pubsub.publish(pubsubName, topic, data)
 }
 
 /**
  * Send data to the binding middleware.
+ * @param { string } bindingName - The name of the binding middleware.
  * @param { string } operation - The operation for the binding middleware, e.g. 'create', 'delete'.
  * @param { any } data - The data to be sent.
  */
-async function send (operation, data) {
-  if (bindingName === '') {
-    console.error('binding name should be specified in env or config.json if you want to use \'send\'')
-    return
-  }
+async function send (bindingName, operation, data) {
   // FIXME: consider meatadata for the binding send
   await daprClient.binding.send(bindingName, operation, data)
 }

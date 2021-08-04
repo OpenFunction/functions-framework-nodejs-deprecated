@@ -32,6 +32,9 @@ function openfuncGeneralHandler (app, userFunction) {
     try {
       const data = req.body
       const result = await userFunction(data)
+      if (result === undefined) {
+        res.status(HTTP_CODE.SUCCESS).send()
+      }
       if (openfuncConfig.outputs.isEmpty) {
         res.status(HTTP_CODE.SUCCESS).json({ data: result })
       } else {
@@ -51,26 +54,43 @@ function openfuncGeneralHandler (app, userFunction) {
  * @param { function } userFunction - User's function.
  */
 function openfuncSubscribeHandler (app, userFunction) {
-  if (openfuncConfig.pubsubName === '' || openfuncConfig.pubsubTopic === '') {
-    console.error('pubsub name and pubsub topic should be specified if the mode option is \'subscribe\'')
-    process.exit(1)
-  }
-  // the Header of pubsub mode is 'application/cloudevent+json'
+  // note that the Header of pubsub mode is 'application/cloudevent+json'
   app.use(express.json({ type: ['application/*+json'] }))
   // construct dapr subscriber route
+  const { name, uri } = openfuncConfig.input
   app.get('/dapr/subscribe', (_req, res) => {
     res.json([
       {
-        pubsubname: openfuncConfig.pubsubName,
-        topic: openfuncConfig.pubsubTopic,
-        route: '/'
+        pubsubname: name,
+        // note that topic here is as same as uri
+        topic: uri,
+        route: uri
       }
     ])
   })
 
+  // redirect the dapr binding receive url to the '/' silently
+  app.use((req, _res, next) => {
+    if (req.url === '/' + uri) {
+      req.url = '/'
+    }
+    next()
+  })
+
   app.post('/', async (req, res) => {
     try {
-      await userFunction(req, res, openfuncContext)
+      // pubsub subscribor mode receives a cloudevent request, so the real data is `req.body.data`
+      const data = req.body.data
+      const result = await userFunction(data)
+      if (result === undefined) {
+        res.status(HTTP_CODE.SUCCESS).send()
+      }
+      if (openfuncConfig.outputs.isEmpty) {
+        res.status(HTTP_CODE.SUCCESS).json({ data: result })
+      } else {
+        await sendResultToOutputs(result, openfuncConfig.outputs.data)
+        res.status(HTTP_CODE.SUCCESS).send()
+      }
     } catch (err) {
       console.error(err)
       res.status(HTTP_CODE.ERROR_UNSUPPORTED).json({ error: err })
@@ -84,15 +104,11 @@ function openfuncSubscribeHandler (app, userFunction) {
  * @param { function } userFunction - User's function.
  */
 function openfuncBindingHandler (app, userFunction) {
-  if (openfuncConfig.bindingName) {
-    console.error('binding name should be specified if the mode option is \'binding-receive\'')
-    process.exit(1)
-  }
   // the Header of pubsub mode is 'application/cloudevent+json'
   app.use(express.json())
   // redirect the dapr binding receive url to the '/' silently
   app.use((req, _res, next) => {
-    if (req.url === '/' + openfuncConfig.bindingName) {
+    if (req.url === '/' + openfuncConfig.input.name) {
       req.url = '/'
     }
     next()
@@ -100,7 +116,17 @@ function openfuncBindingHandler (app, userFunction) {
 
   app.post('/', async (req, res) => {
     try {
-      await userFunction(req, res, openfuncContext)
+      const data = req.body
+      const result = await userFunction(data)
+      if (result === undefined) {
+        res.status(HTTP_CODE.SUCCESS).send()
+      }
+      if (openfuncConfig.outputs.isEmpty) {
+        res.status(HTTP_CODE.SUCCESS).json({ data: result })
+      } else {
+        await sendResultToOutputs(result, openfuncConfig.outputs.data)
+        res.status(HTTP_CODE.SUCCESS).send()
+      }
     } catch (err) {
       console.error(err)
       res.status(HTTP_CODE.ERROR_UNSUPPORTED).json({ error: err })
@@ -118,10 +144,10 @@ async function sendResultToOutputs (result, outputs) {
   try {
     await Promise.all(outputs.map(async output => {
       if (output.params.type === MIDDLEWARE_TYPE.PUBSUB) {
-        await openfuncContext.pubsub.publish(data)
+        await openfuncContext.pubsub.publish(output.name, output.uri, data)
       }
       if (output.params.type === MIDDLEWARE_TYPE.BINDINGS) {
-        await openfuncContext.bindings.send(output.params.operation, data)
+        await openfuncContext.bindings.send(output.name, output.params.operation, data)
       }
     }))
   } catch (err) {

@@ -9,11 +9,6 @@ export const HTTP_CODE = {
   ERROR_UNSUPPORTED: '415'
 }
 
-export const FUNCTION_MODE = {
-  SUBSCRIBE: 'subscribe',
-  BINDING: 'binding-receive'
-}
-
 export const MIDDLEWARE_TYPE = {
   PUBSUB: 'pubsub',
   BINDINGS: 'bindings',
