@@ -1,5 +1,6 @@
 import express from 'express'
 import { HTTP_CODE } from './const.js'
+import { openfuncHandler } from './openfunction/handler.js'
 
 /**
  * Handle the business logic of HTTP requests.
@@ -8,9 +9,9 @@ import { HTTP_CODE } from './const.js'
  */
 function httpHandler (app, userFunction) {
   app.use(express.json())
-  app.all('/*', (req, res) => {
+  app.all('/*', async (req, res) => {
     try {
-      userFunction(req, res)
+      await userFunction(req, res)
     } catch (err) {
       console.error(err)
       res.status(HTTP_CODE.ERROR_UNSUPPORTED)
@@ -36,11 +37,11 @@ function cloudeventsHandler (app, userFunction) {
   })
   app.use(express.json({ type: ['application/cloudevents+json', 'application/json'] }))
 
-  app.post('/*', (req, res) => {
+  app.post('/*', async (req, res) => {
     try {
       const ceObj = constructCloudEventObj(req, isBinaryCloudEvent(req))
 
-      let result = userFunction(ceObj)
+      let result = await userFunction(ceObj)
       if (result === null || result === undefined) {
         result = {}
       }
@@ -98,4 +99,13 @@ function constructCloudEventObj (req, isBinaryMode) {
   return ce
 }
 
-export { httpHandler, cloudeventsHandler }
+/**
+ * Handle the business logic of openfunction requests.
+ * @param { import('express').Application } app - Express application object.
+ * @param { function } userFunction - User's function.
+ */
+function openfunctionHandler (app, userFunction) {
+  openfuncHandler(app, userFunction)
+}
+
+export { httpHandler, cloudeventsHandler, openfunctionHandler }
