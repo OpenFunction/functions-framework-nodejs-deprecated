@@ -2,6 +2,3 @@ node_modules
 
 # mac temp file
 .DS_Store
-
-config.json
-test.js

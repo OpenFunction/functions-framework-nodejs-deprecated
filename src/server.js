@@ -1,17 +1,16 @@
 import express from 'express'
 import morgan from 'morgan'
 import { FUNCTION_SOURCE } from './const.js'
-import { cloudeventsHandler, httpHandler, openfunctionHandler } from './handler.js'
+import { cloudeventsHandler, httpHandler } from './handler.js'
 
 /**
  * Creates and configures an Express application and returns an HTTP server
  * which will run it.
  * @param { function } userFunction - User's function.
  * @param { string } functionSignatureType - Type of user's function signature.
- * @param { string } functionMode - Type of user's function mode, only used when function signature is openfunction
  * @return { import('express').Application } HTTP server.
  */
-function getServer (userFunction, functionSignatureType, functionMode) {
+function getServer (userFunction, functionSignatureType) {
   const app = express()
 
   // add logger
@@ -23,7 +22,7 @@ function getServer (userFunction, functionSignatureType, functionMode) {
   // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
   app.disable('x-powered-by')
 
-  registerFunctionRoutes(app, userFunction, functionSignatureType, functionMode)
+  registerFunctionRoutes(app, userFunction, functionSignatureType)
 
   return app
 }
@@ -33,15 +32,12 @@ function getServer (userFunction, functionSignatureType, functionMode) {
  * @param { import('express').Application } app - Express application object.
  * @param { function } userFunction - User's function.
  * @param { string } functionSignatureType - Type of user's function signature.
- * @param { string } functionMode - Type of user's function mode, only used when function signature is openfunction
  */
-function registerFunctionRoutes (app, userFunction, functionSignatureType, functionMode) {
+function registerFunctionRoutes (app, userFunction, functionSignatureType) {
   if (functionSignatureType === FUNCTION_SOURCE.HTTP) {
     httpHandler(app, userFunction)
   } else if (functionSignatureType === FUNCTION_SOURCE.CLOUDEVENT) {
     cloudeventsHandler(app, userFunction)
-  } else if (functionSignatureType === FUNCTION_SOURCE.OPENFUNCTION) {
-    openfunctionHandler(app, userFunction, functionMode)
   }
 }
 
