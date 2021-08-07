@@ -11,7 +11,7 @@ program
   .requiredOption('-t, --target <target>', 'function target name, support nested function name')
   .addOption(new Option('-p, --port <port>', 'the exposed port of the function server').default('8080'))
   .addOption(new Option('-s, --source <type>', 'function source type')
-    .default(HTTP).choices([HTTP, CLOUDEVENT, OPENFUNCTION]))
+    .default(OPENFUNCTION).choices([HTTP, CLOUDEVENT, OPENFUNCTION]))
 program.parse(process.argv)
 
 const options = program.opts()
