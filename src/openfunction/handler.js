@@ -11,11 +11,9 @@ import { openfuncConfig } from './config.js'
 function openfuncHandler (app, userFunction) {
   if (openfuncConfig.input.isEmpty) {
     openfuncGeneralHandler(app, userFunction)
-  }
-  if (openfuncConfig.input.params.type === MIDDLEWARE_TYPE.PUBSUB) {
+  } else if (openfuncConfig.input.params.type === MIDDLEWARE_TYPE.PUBSUB) {
     openfuncSubscribeHandler(app, userFunction)
-  }
-  if (openfuncConfig.input.params.types === MIDDLEWARE_TYPE.BINDINGS) {
+  } else if (openfuncConfig.input.params.type === MIDDLEWARE_TYPE.BINDINGS) {
     openfuncBindingHandler(app, userFunction)
   }
 }
@@ -106,7 +104,7 @@ function openfuncBindingHandler (app, userFunction) {
     next()
   })
 
-  app.post('/' + openfuncConfig.input.uri, async (req, res) => {
+  app.all('/' + openfuncConfig.input.uri, async (req, res) => {
     try {
       const data = req.body
       const result = await userFunction(data)

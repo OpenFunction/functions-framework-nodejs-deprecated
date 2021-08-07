@@ -1,10 +1,18 @@
-import { isEmpty } from 'lodash'
+import pkg from 'lodash'
 import { MIDDLEWARE_TYPE } from '../const.js'
 // require cannot be used when "type" = "module" in package.json
 import { createRequire } from 'module'
 const require = createRequire(import.meta.url)
 
-const config = require(process.cwd() + '/config.json')
+const { isEmpty } = pkg
+
+let config
+try {
+  config = require(process.cwd() + '/config.json')
+} catch (err) {
+  config = {}
+  console.error('get config.json failed: ' + err)
+}
 
 // check user input here to simplify the business logic
 let input = config.input || {}
@@ -15,8 +23,8 @@ if (!isInputEmpty) {
     console.error('properties in input should not be empty if input is specified')
     process.exit(1)
   }
-  if (input.params.type !== MIDDLEWARE_TYPE.PUBSUB ||
-    input.params.type !== MIDDLEWARE_TYPE.BINDINGS ||
+  if (input.params.type !== MIDDLEWARE_TYPE.PUBSUB &&
+    input.params.type !== MIDDLEWARE_TYPE.BINDINGS &&
     input.params.type !== MIDDLEWARE_TYPE.INVOKE) {
     console.error('params.type in input is invalid, valid: pubsub, bindings, invoke')
     process.exit(1)
@@ -51,8 +59,8 @@ if (!isOutputsEmpty) {
       console.error(`properties in outputs.${output.name} should not be empty if it is specified`)
       process.exit(1)
     }
-    if (output.params.type !== MIDDLEWARE_TYPE.PUBSUB ||
-      output.params.type !== MIDDLEWARE_TYPE.BINDINGS ||
+    if (output.params.type !== MIDDLEWARE_TYPE.PUBSUB &&
+      output.params.type !== MIDDLEWARE_TYPE.BINDINGS &&
       output.params.type !== MIDDLEWARE_TYPE.INVOKE) {
       console.error(`params.type in outputs.${output.name} is invalid, valid: pubsub, bindings, invoke`)
       process.exit(1)
