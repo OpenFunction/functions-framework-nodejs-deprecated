@@ -4,7 +4,8 @@ const daprHost = '127.0.0.1'
 const daprPort = process.env.DAPR_HTTP_PORT || 3500 // Dapr Sidecar Port of this Example Server
 
 // TODO: handle statestore later
-const stateName = 'statestore'
+// we now provide interface to connect to the state, but it will not be used now
+const stateName = ''
 
 const daprClient = new DaprClient(daprHost, daprPort)
 

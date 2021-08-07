@@ -69,15 +69,7 @@ function openfuncSubscribeHandler (app, userFunction) {
     ])
   })
 
-  // redirect the dapr binding receive url to the '/' silently
-  app.use((req, _res, next) => {
-    if (req.url === '/' + uri) {
-      req.url = '/'
-    }
-    next()
-  })
-
-  app.post('/', async (req, res) => {
+  app.post('/' + uri, async (req, res) => {
     try {
       // pubsub subscribor mode receives a cloudevent request, so the real data is `req.body.data`
       const data = req.body.data
@@ -106,15 +98,15 @@ function openfuncSubscribeHandler (app, userFunction) {
 function openfuncBindingHandler (app, userFunction) {
   // the Header of pubsub mode is 'application/cloudevent+json'
   app.use(express.json())
-  // redirect the dapr binding receive url to the '/' silently
+  // redirect the dapr binding receive url to the user specified uri silently
   app.use((req, _res, next) => {
     if (req.url === '/' + openfuncConfig.input.name) {
-      req.url = '/'
+      req.url = '/' + openfuncConfig.input.uri
     }
     next()
   })
 
-  app.post('/', async (req, res) => {
+  app.post('/' + openfuncConfig.input.uri, async (req, res) => {
     try {
       const data = req.body
       const result = await userFunction(data)
