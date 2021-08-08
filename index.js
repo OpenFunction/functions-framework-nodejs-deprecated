@@ -5,14 +5,13 @@ import { getUserFunction } from './src/loader.js'
 import { FUNCTION_SOURCE } from './src/const.js'
 import { getServer } from './src/server.js'
 
-const { HTTP, CLOUDEVENT, OPENFUNCTION_CONTEXT } = FUNCTION_SOURCE
+const { HTTP, CLOUDEVENT, OPENFUNCTION } = FUNCTION_SOURCE
 
 program
   .requiredOption('-t, --target <target>', 'function target name, support nested function name')
   .addOption(new Option('-p, --port <port>', 'the exposed port of the function server').default('8080'))
   .addOption(new Option('-s, --source <type>', 'function source type')
-    .default(HTTP).choices([HTTP, CLOUDEVENT, OPENFUNCTION_CONTEXT]))
-
+    .default(OPENFUNCTION).choices([HTTP, CLOUDEVENT, OPENFUNCTION]))
 program.parse(process.argv)
 
 const options = program.opts()

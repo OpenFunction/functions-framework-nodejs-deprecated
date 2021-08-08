@@ -1,7 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import { FUNCTION_SOURCE } from './const.js'
-import { cloudeventsHandler, httpHandler } from './handler.js'
+import { cloudeventsHandler, httpHandler, openfunctionHandler } from './handler.js'
 
 /**
  * Creates and configures an Express application and returns an HTTP server
@@ -38,6 +38,8 @@ function registerFunctionRoutes (app, userFunction, functionSignatureType) {
     httpHandler(app, userFunction)
   } else if (functionSignatureType === FUNCTION_SOURCE.CLOUDEVENT) {
     cloudeventsHandler(app, userFunction)
+  } else if (functionSignatureType === FUNCTION_SOURCE.OPENFUNCTION) {
+    openfunctionHandler(app, userFunction)
   }
 }
 
