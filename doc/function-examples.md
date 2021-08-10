@@ -31,7 +31,25 @@ $ curl localhost:8080
 {"data": "Hello, World"}
 ```
 
-With the assistance of [OpenFunction](https://github.com/OpenFunction/OpenFunction), you can let your function communicate with the middleware and do some cool things like pubsub and so on. If you want to learn about what happens in it, please dive into this [articles](./arch.md).
+With the assistance of [OpenFunction](https://github.com/OpenFunction/OpenFunction), you can let your function communicate with the middleware and do some cool things like pubsub and so on. **If you want to learn about what happens in it, please dive into this [articles](./arch.md).**
+
+Note that your returned data will always be wrapped in a `data` filed, for example, if your returned data is `hello`, then your response body is:
+
+```json
+{
+  "data": "hello"
+}
+```
+
+If it's an object, let's say `{"name": "openfunction"}`, it returns:
+
+```json
+{
+  "data": {
+    "name": "openfunction"
+  }
+}
+```
 
 Here let's learn about how to write your functions quickly to connect to the middleware components.
 
@@ -69,9 +87,9 @@ First, you need to specify the `input` or `outputs` or both in a json file calle
 
 >  ⚠️ To understand all details of `config.json`, please read [OpenFunction Context Specs](https://github.com/OpenFunction/functions-framework/blob/main/docs/OpenFunction-context-specs.md).
 
-**`input` means what type of your function is**. If you don't specify this field, our function is regarded as the normal HTTP request. Let's say thet you specify the filed is a `pubsub` (see `input.param.type` above), this means your function is now a subscriber in the OpenFunction, the pubsub middleware which the function subscribes is called `pubsub` (see `input.name`) and the topic is `test` (see `input.uri`).
+**`input` means what type of your function is**. This means your function is now a subscriber in the OpenFunction, the pubsub middleware which the function subscribes is called `pubsub` (see `input.name`) and the topic is `test` (see `input.uri`).
 
-**`outputs` means the destinations your function result goes to**. If you don't specify this field, the result just returns to the caller. Here let's say we want to send the result to `pubsub` middlware component (see `outputs.pubsub`), it's type is a `pubsub` (see `outputs.pubsub.params.type`), this means that your function is now a publisher, and your publish your result to the middleware component called `pubsub`.
+**`outputs` means the destinations your function result goes to**. This means that your function is now a publisher, and your publish your result to the middleware component called `pubsub`.
 
 The business logic in our example is easy:
 
@@ -133,11 +151,11 @@ $ curl -X POST \
 The data will be like:
 
 ```bash
-== APP == { runtime: 'cloudevent' }
+== APP == { framework: 'openfunction' }
 == APP == ::ffff:127.0.0.1 - - [07/Aug/2021:09:09:31 +0000] "POST /test HTTP/1.1" 200 - "-" "curl/7.58.0"
-== APP == { data: { runtime: 'cloudevent' } }
+== APP == { data: { framework: 'openfunction' } }
 == APP == ::ffff:127.0.0.1 - - [07/Aug/2021:09:09:36 +0000] "POST /test HTTP/1.1" 200 - "-" "fasthttp"
-== APP == { data: { data: { runtime: 'cloudevent' } } }
+== APP == { data: { data: { framework: 'openfunction' } } }
 == APP == ::ffff:127.0.0.1 - - [07/Aug/2021:09:09:41 +0000] "POST /test HTTP/1.1" 200 - "-" "fasthttp"
 == APP == { data: { data: { data: [Object] } } }
 == APP == ::ffff:127.0.0.1 - - [07/Aug/2021:09:09:46 +0000] "POST /test HTTP/1.1" 200 - "-" "fasthttp"
@@ -379,7 +397,7 @@ $ curl -X POST \
     "time": "2019-11-06T11:08:00Z",
     "datacontenttype": "application/json",
     "data": {
-        "runtime": "cloudevent"
+        "framework": "openfunction"
     }
 }
 ```

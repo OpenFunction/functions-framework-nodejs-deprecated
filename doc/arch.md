@@ -1,10 +1,14 @@
-# Arch
+# How Does Data Flow in OpenFunction?
+
+One heighlight of OpenFunction is that **you can communicate with not only the function itself, but also some third middlewares, which provide users greater scalability to handle their business logic**.
+
+![image-20210810215342377](img/image-20210810215342377.png)
+
+The above image shows a possible function composition in OpenFunction. In OpenFunction, user function can either send result to middleware or receive data from middlware.
 
 In order to make full use of OpenFunction, we can add a `config.js` for the user function. However, you may not understand how does `config.js` work in our framework.
 
 Here, we demonstrate an example to show the dataflow in the openfunction with the configuration:
-
-> ⚠️ Before continuing reding, it would be better to read [function examples](./function-examples.md) first. Or you may be confused to the following contents.
 
 Assume that you write two functions: Func A has a role of publisher, and Func B has a role of subscriber. To declare these two roles, you need to specify it in your `config.json`
 
@@ -21,6 +25,8 @@ Func B - `config.json`:
   }
 }
 ```
+
+**`input` means what type of your function is**. If you don't specify this field, our function is regarded as the normal HTTP request. Let's say thet you specify the filed is a `pubsub` (see `input.param.type` above), this means your function is now a subscriber in the OpenFunction, the pubsub middleware which the function subscribes is called `middleware` (see `input.name`) and the topic is `test` (see `input.uri`).
 
 This means that Func B has a role of *<u>subscriber</u>*, the pubsub middleware is called "middleware" and the topic that Func B subscribes is called "test".
 
@@ -39,9 +45,13 @@ Func A - `config.json`
 }
 ```
 
-`outputs` is a map data structure, as you can declare many output middleware. Here it means that the pubsub middleware is called "middleware" and the topic that Func A published is called "test".
+**`outputs` means the destinations your function result goes to**. If you don't specify this field, the result just returns to the caller. Here let's say we want to send the result to `middleware` middlware component (see `outputs.middleware`), it's type is a `pubsub` (see `outputs.pubsub.params.type`), this means that your function is now a publisher, and you publish your result to the middleware component called `pubsub`.
 
-So now let's see how does data flow in OpenFunction:
+`outputs` is a map data structure, as you can declare many output middleware.  Here pubsub middleware is called "middleware" and the topic that Func A <u>published</u> is called "test".
+
+> ⚠️ To understand all details of `config.json`, please read [OpenFunction Context Specs](https://github.com/OpenFunction/functions-framework/blob/main/docs/OpenFunction-context-specs.md).
+
+Now let's see how does data flow in OpenFunction:
 
 ![image-20210808113548809](img/image-20210808113548809.png)
 
