@@ -6,6 +6,6 @@
   "time":"2019-11-06T11:08:00Z",
   "datacontenttype":"application/json",
   "data":{
-    "runtime":"cloudevent"
+    "framework":"openfunction"
   }
 }
