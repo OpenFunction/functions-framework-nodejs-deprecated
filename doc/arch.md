@@ -4,7 +4,7 @@ One heighlight of OpenFunction is that **you can communicate with not only the f
 
 ![image-20210810215342377](img/image-20210810215342377.png)
 
-The above image shows a possible function composition in OpenFunction. In OpenFunction, user function can either send result to middleware or receive data from middlware.
+The above image shows a possible function composition in OpenFunction. In OpenFunction, user function can either send result to middleware or receive data from middleware.
 
 In order to make full use of OpenFunction, we can add a `config.js` for the user function. However, you may not understand how does `config.js` work in our framework.
 
@@ -26,7 +26,7 @@ Func B - `config.json`:
 }
 ```
 
-**`input` means what type of your function is**. If you don't specify this field, our function is regarded as the normal HTTP request. Let's say thet you specify the filed is a `pubsub` (see `input.param.type` above), this means your function is now a subscriber in the OpenFunction, the pubsub middleware which the function subscribes is called `middleware` (see `input.name`) and the topic is `test` (see `input.uri`).
+**`input` means what type of your function is**. If you don't specify this field, our function is regarded as the normal HTTP request. Let's say that you specify the field is a `pubsub` (see `input.param.type` above), this means your function is now a subscriber in the OpenFunction, the pubsub middleware which the function subscribes is called `middleware` (see `input.name`) and the topic is `test` (see `input.uri`).
 
 This means that Func B has a role of *<u>subscriber</u>*, the pubsub middleware is called "middleware" and the topic that Func B subscribes is called "test".
 
@@ -45,7 +45,7 @@ Func A - `config.json`
 }
 ```
 
-**`outputs` means the destinations your function result goes to**. If you don't specify this field, the result just returns to the caller. Here let's say we want to send the result to `middleware` middlware component (see `outputs.middleware`), it's type is a `pubsub` (see `outputs.pubsub.params.type`), this means that your function is now a publisher, and you publish your result to the middleware component called `pubsub`.
+**`outputs` means the destinations your function result goes to**. If you don't specify this field, the result just returns to the caller. Here let's say we want to send the result to `middleware` middleware component (see `outputs.middleware`), it's type is a `pubsub` (see `outputs.pubsub.params.type`), this means that your function is now a publisher, and you publish your result to the middleware component called `pubsub`.
 
 `outputs` is a map data structure, as you can declare many output middleware.  Here pubsub middleware is called "middleware" and the topic that Func A <u>published</u> is called "test".
 
