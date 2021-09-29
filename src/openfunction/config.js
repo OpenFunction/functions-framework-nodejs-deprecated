@@ -11,7 +11,8 @@ try {
   config = require(process.cwd() + '/config.json')
 } catch (err) {
   config = {}
-  console.error('get config.json failed: ' + err)
+  console.warn('get config.json failed: ' + err)
+  console.warn('if you want to serve your function in an async way, a right config.json must be provided')
 }
 
 // check user input here to simplify the business logic
