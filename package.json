@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/linxuyalun/functions-framework-nodejs.git"
+    "url": "git+https://github.com/openfunction/functions-framework-nodejs.git"
   },
   "author": "OpenFunction",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/linxuyalun/functions-framework-nodejs/issues"
+    "url": "https://github.com/openfunction/functions-framework-nodejs/issues"
   },
-  "homepage": "https://github.com/linxuyalun/functions-framework-nodejs#readme",
+  "homepage": "https://github.com/openfunction/functions-framework-nodejs#readme",
   "devDependencies": {
     "standard": "^16.0.3"
   },
